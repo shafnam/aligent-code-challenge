@@ -13,7 +13,7 @@ $(document).ready(function() {
             clear: 'fa fa-trash',
             close: 'fa fa-remove'
         },
-        format: 'YYYY-MM-DD hh:mm'
+        //format: 'YYYY-MM-DD hh:mm'
     });
 
     $('.datetimepicker_end').datetimepicker({
@@ -28,7 +28,7 @@ $(document).ready(function() {
             clear: 'fa fa-trash',
             close: 'fa fa-remove'
         },
-        format: 'YYYY-MM-DD hh:mm'
+        //format: 'YYYY-MM-DD hh:mm'
     });
-    
+
 });

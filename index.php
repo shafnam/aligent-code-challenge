@@ -3,6 +3,8 @@
     //define variables and set to empty values
     $startErr = $endErr = "";
     $start = $end = "";
+    // initially the number of a days will be set to null 
+    $number_of_days = null;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -21,11 +23,32 @@
             $end = $_POST['end'];
         }
 
-        // If there are no validation errors show message.
+        // If there are no validation errors run functions.
         if(empty($startErr) && empty($endErr)){
-            $message = 'Form submitted!';
+            //$message = 'Form submitted!';
+            $number_of_days = findDateDiff($start, $end);
         }
 
+    }
+
+    /**
+     * Find the complete number of days between two datetime parameters
+     * @param string $start
+     * @param string $end
+     * @return integer
+     */
+    function findDateDiff($start, $end)
+    {
+        /**
+         *   The strtotime() function parses an English textual datetime into a Unix timestamp 
+         *   (the number of seconds since January 1 1970 00:00:00 GMT). 
+        */
+        $datediff = (strtotime($start) - strtotime($end));
+        // 1 day = 24 hours 
+        // 24 * 60 * 60 = 86400 seconds 
+        $number_of_days = abs($datediff / (60 * 60 * 24)); // gets the positive value
+        $number_of_days =  floor($number_of_days); // gets the complete number of days
+        return $number_of_days;
     }
 
 ?>
@@ -65,7 +88,7 @@
         </form>
 
         <div class="title mt-5">
-          <h3>Number of days</h3>
+          <h3>Number of days: <?php echo $number_of_days; ?></h3>
         </div>
 
         <div class="title mt-5">
