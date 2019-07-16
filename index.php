@@ -4,7 +4,7 @@
     $startErr = $endErr = "";
     $start = $end = "";
     // initially the number of a days will be set to null 
-    $number_of_days = null;
+    $number_of_days = $number_of_week_days = null;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -27,14 +27,16 @@
         if(empty($startErr) && empty($endErr)){
             //$message = 'Form submitted!';
             $number_of_days = findDateDiff($start, $end);
+            $number_of_days =  floor($number_of_days); // gets the complete number of days
+            $number_of_week_days = findWeekDays($start, $end);
         }
 
     }
 
     /**
      * Find the complete number of days between two datetime parameters
-     * @param string $start
-     * @param string $end
+     * @param $start
+     * @param $end
      * @return integer
      */
     function findDateDiff($start, $end)
@@ -47,8 +49,62 @@
         // 1 day = 24 hours 
         // 24 * 60 * 60 = 86400 seconds 
         $number_of_days = abs($datediff / (60 * 60 * 24)); // gets the positive value
-        $number_of_days =  floor($number_of_days); // gets the complete number of days
+        //$number_of_days =  floor($number_of_days); // gets the complete number of days
         return $number_of_days;
+    }
+
+    /**
+     * Find the number of complete weekdays between two datetime parameters
+     * @param $start
+     * @param $end
+     * @return integer
+     */
+    function findWeekDays($start, $end)
+    {
+        $number_of_days = findDateDiff($start, $end); // find total number of days between the date range
+
+        /** 
+         * If number_of_days is not a whole number which means 
+         * there is a half day which cannot be considered  as
+         * a complete day therefore ignore that day 
+         * */
+        if (floor($number_of_days) == $number_of_days){
+            $no_days = 0;
+        } else {
+            // ignore the day
+            $no_days = -1;
+        }
+        
+        $weekends = 0;
+        $start = strtotime($start);
+        $end = strtotime($end);
+
+        // If start is bigger than end
+        // Then swap start and end
+        if ($start > $end) {
+            $stime = $start;
+            $start = $end;
+            $end = $stime;
+        } 
+              
+        $start += 86400; // dont consider the start day
+
+        while($start <= $end){
+            $no_days++; // no of days in the given date range   
+            $what_day = date('N',$start); // N - The ISO-8601 numeric representation of a day (1 for Monday, 7 for Sunday)            
+            if($what_day > 5) { // 6 and 7 are weekend days
+                $weekends++;
+            }             
+            $start += 86400; // +1 day                    
+        }
+        
+        $week_days = $no_days - $weekends;
+
+        if($week_days < 1){ // do not return negative value instead return 0
+            $week_days = 0;
+        }
+
+        return $week_days;
     }
 
 ?>
@@ -88,19 +144,17 @@
         </form>
 
         <div class="title mt-5">
-          <h3>Number of days: <?php echo $number_of_days; ?></h3>
+          <h3>From (Not included): <b><?php echo $start; ?></b> - To (Included): <b><?php echo $end; ?></b></h3>
         </div>
 
         <div class="title mt-5">
-          <h3>Number of weekdays</h3>
+            <p>Number of days: <?php echo $number_of_days; ?></p>
+            <p>Number of weekdays: <?php echo $number_of_week_days; ?></p>
+            <p>Number of complete weeks: </p>
         </div>
 
         <div class="title mt-5">
-          <h3>Number of complete weeks</h3>
-        </div>
-
-        <div class="title mt-5">
-          <h3><?php if(isset($message)) { echo $message; } ?></h3>
+          <p><?php if(isset($message)) { echo $message; } ?></p>
         </div>        
 
     </div>
