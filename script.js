@@ -32,3 +32,11 @@ $(document).ready(function() {
     });
 
 });
+
+$(document).ready(function(){
+    $('#allow_timezone').click(function(){
+        var inputValue = $(this).attr("value");
+        //alert(inputValue);
+        $("#" + inputValue).toggle();
+    });
+});

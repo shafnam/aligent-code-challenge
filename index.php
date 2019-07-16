@@ -122,6 +122,23 @@
         return $number_of_weeks;
     }
 
+    /**
+     * Timezones list with GMT offset
+     *
+     * @return array
+     * @link http://stackoverflow.com/a/9328760
+     */
+    function tz_list() {
+        $zones_array = array();
+        $timestamp = time();
+        foreach(timezone_identifiers_list() as $key => $zone) {
+        date_default_timezone_set($zone);
+        $zones_array[$key]['zone'] = $zone;
+        $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+        }
+        return $zones_array;
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -139,22 +156,56 @@
         <div class="container mt-5">
             
             <form class="mt-5" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                <div class="row mb-5">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input id="allow_timezone" class="form-check-input" type="checkbox" value="timezone">
+                                Calculate across different timezones
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-5" id="timezone" style="display: none;">
+                    <div class="col-md-6">
+                        <select class="form-control selectpicker">
+                            <option value="0">Please, select timezone for start date</option>
+                            <?php foreach(tz_list() as $t) { ?>
+                            <option value="<?php print $t['zone'] ?>">
+                                <?php print $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
+                            </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control selectpicker">
+                            <option value="0">Please, select timezone for end date</option>
+                            <?php foreach(tz_list() as $t) { ?>
+                            <option value="<?php print $t['zone'] ?>">
+                                <?php print $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
+                            </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="label-control">Start Date</label>
+                            <label class="label-control">Select start date</label>
                             <input type="text" class="form-control datetimepicker_start" name="start" value="">
                             <span class="error"><?php echo $startErr;?></span>
                         </div>                    
-                    </div>
+                    </div>                    
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="label-control">End Date</label>
+                            <label class="label-control">Select end date</label>
                             <input type="text" class="form-control datetimepicker_end" name="end" value="">
                             <span class="error"><?php echo $endErr;?></span>
                         </div>                    
                     </div>
-                    <div class="col-md-12">
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mt-5">
                         <button class="btn btn-primary btn-sm" type="submit" name="submit">Find</button>
                     </div>
                 </div>
@@ -163,7 +214,7 @@
             <?php if(isset($start) && isset($end)) { ?>
 
             <div class="title mt-5">
-            <h3>From (Not included): <b><?php echo $start; ?></b> - To (Included): <b><?php echo $end; ?></b></h3>
+                <h3>From (Not included): <b><?php echo $start; ?></b> - To (Included): <b><?php echo $end; ?></b></h3>
             </div>
 
             <div class="title mt-5">
@@ -175,7 +226,7 @@
             <?php } ?>
 
             <div class="title mt-5">
-            <p><?php if(isset($message)) { echo $message; } ?></p>
+                <p><?php if(isset($message)) { echo $message; } ?></p>
             </div>        
 
         </div>
