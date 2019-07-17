@@ -1,45 +1,33 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
-
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+Simple Time and Date Calculator with Timezone Conversion
 
 ---
 
-## Edit a file
+This application is created to calculate the number of days, number of weekdays and number of complete weeks between two datetime parameters. Also you can find out how many seconds, minutes, hours or years are there for a given time period. 
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+---
+## Features
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+ 1. The results are given in the nearest whole number value. 
+	e.g. If the result for number of days is : 1.8333 it will be calculated as 1 day.
+	
+ 2. The start date is ignored when calculating the result.
+	e.g. If a date range is from Jan 21 to Jan 25 Jan 21 will be ignored. 
+	
+ 3. The date range can be calculated from different timezones as well.
+ 
+ 4. Can input the time difference as well.
+
 
 ---
 
-## Create a file
+## How to run
 
-Next, you’ll add a new file to this repository.
+ 1. Clone the project by using <git clone https://shafnam@bitbucket.org/shafnam/aligent-code-challenge.git>
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+ 2. Go to browser: http://localhost/aligent-code-challenge
+ 
+ 3. Enter the start datetime and end datetime as mandatory parameters.
+ 
+ 4. If needed conversion across timezones add timezones as well.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).

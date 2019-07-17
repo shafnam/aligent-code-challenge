@@ -194,6 +194,8 @@
     <body>
         
         <div class="container mt-5">
+
+            <h2>Simple Time and Date Calculator with Timezone Conversion</h2>
             
             <form class="mt-5" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                 <div class="row mb-5">
