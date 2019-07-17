@@ -2,12 +2,29 @@
 
     //define variables and set to empty values
     $startErr = $endErr = "";
-    $start = $end = $number_of_days = $number_of_week_days = $number_of_weeks = null;
+    $start = $end = $number_of_days = $number_of_week_days = $number_of_weeks = $timezone = null;
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    //if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (isset($_POST['submit'])){
 
         /* Validations */ 
-
+        if(isset($_POST['timezone'])){
+            $timezone = 1;
+        }
+        if (empty($_POST["s_tzone"])) {
+            // Set 'Australia/Adelaide' timezone as default timezone
+            date_default_timezone_set('Australia/Adelaide'); 
+        } else {
+            $s_tzone = $_POST["s_tzone"];
+            // Set start timezone as default timezone
+            date_default_timezone_set($s_tzone); 
+        }
+        if (empty($_POST["e_tzone"])) {
+            $e_tzone = null;
+        } else {
+            $e_tzone = $_POST['e_tzone'];
+        }
         // Check whether the start date is empty. if not store the post value in $start variable
         if (empty($_POST["start"])) {
             $startErr = "Please enter a start date";
@@ -23,11 +40,12 @@
 
         // If there are no validation errors run functions.
         if(empty($startErr) && empty($endErr)){
-            //$message = 'Form submitted!';
-            $number_of_days = findDateDiff($start, $end);
-            $number_of_days =  floor($number_of_days); // gets the complete number of days
-            $number_of_week_days = findWeekDays($start, $end);
+
+            $number_of_days = findDateDiff($start, $end, $e_tzone);
+            $number_of_days = floor($number_of_days); // gets the complete number of days
+            $number_of_week_days = findWeekDays($start, $end, $e_tzone);
             $number_of_weeks = findNoOfWeeks($start, $end);
+            // $message = $s_tzone. $e_tzone;            
         }
 
     }
@@ -39,17 +57,14 @@
      * @return integer
      */
     function findDateDiff($start, $end)
-    {
-        /**
-         *   The strtotime() function parses an English textual datetime into a Unix timestamp 
-         *   (the number of seconds since January 1 1970 00:00:00 GMT). 
-        */
+    {        
         $datediff = (strtotime($start) - strtotime($end));
         // 1 day = 24 hours 
         // 24 * 60 * 60 = 86400 seconds 
         $number_of_days = abs($datediff / (60 * 60 * 24)); // gets the positive value
         //$number_of_days =  floor($number_of_days); // gets the complete number of days
         return $number_of_days;
+        
     }
 
     /**
@@ -159,8 +174,8 @@
                 <div class="row mb-5">
                     <div class="col-md-6">
                         <div class="form-check">
-                            <label class="form-check-label">
-                                <input id="allow_timezone" class="form-check-input" type="checkbox" value="timezone">
+                            <label class="form-check-label timezonev">
+                                <input id="allow_timezone" class="form-check-input" type="checkbox" name="timezone" value="timezone" <?php if( $timezone == 1 ){ echo "checked"; }?>>
                                 Calculate across different timezones
                             </label>
                         </div>
@@ -168,20 +183,20 @@
                 </div>
                 <div class="row mb-5" id="timezone" style="display: none;">
                     <div class="col-md-6">
-                        <select class="form-control selectpicker">
+                        <select class="form-control selectpicker" name="s_tzone">
                             <option value="0">Please, select timezone for start date</option>
                             <?php foreach(tz_list() as $t) { ?>
-                            <option value="<?php print $t['zone'] ?>">
+                            <option value="<?php print $t['zone'] ?>" <?php if( isset($s_tzone) && $s_tzone == $t['zone']){ echo "selected"; }?>>
                                 <?php print $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
                             </option>
                             <?php } ?>
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <select class="form-control selectpicker">
+                        <select class="form-control selectpicker" name="e_tzone">
                             <option value="0">Please, select timezone for end date</option>
                             <?php foreach(tz_list() as $t) { ?>
-                            <option value="<?php print $t['zone'] ?>">
+                            <option value="<?php print $t['zone'] ?>" <?php if( isset($e_tzone) && $e_tzone == $t['zone']){ echo "selected"; }?>>
                                 <?php print $t['diff_from_GMT'] . ' - ' . $t['zone'] ?>
                             </option>
                             <?php } ?>
@@ -192,38 +207,42 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="label-control">Select start date</label>
-                            <input type="text" class="form-control datetimepicker_start" name="start" value="">
+                            <input type="text" class="form-control datetimepicker_start" name="start" value="<?php if(isset($start_date)){ echo $start_date; } ?>">
                             <span class="error"><?php echo $startErr;?></span>
                         </div>                    
                     </div>                    
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="label-control">Select end date</label>
-                            <input type="text" class="form-control datetimepicker_end" name="end" value="">
+                            <input type="text" class="form-control datetimepicker_end" name="end" value="<?php if(isset($end_date)){ echo $end_date; } ?>">
                             <span class="error"><?php echo $endErr;?></span>
                         </div>                    
                     </div>
                 </div>
+
+                <?php if(isset($start) && isset($end)) { ?>
+
+                    <div class="title mt-3">
+                        <p>From (Not included): <b><?php echo $start; ?>  <?php if(isset($s_tzone)){ echo $s_tzone . 'Time' ; } ?> 
+                        </b> - To (Included): <b><?php echo $end; ?> <?php if(isset($e_tzone)){ echo $e_tzone . 'Time'; } ?> 
+                        </b></p>
+                    </div>
+
+                    <div class="title mt-0">
+                        <p>Number of days: <?php echo $number_of_days; ?></p>                     
+                        <p>Number of weekdays: <?php echo $number_of_week_days; ?></p>
+                        <p>Number of complete weeks: <?php echo $number_of_weeks; ?></p>
+                    </div>
+
+                <?php } ?>
+                
                 <div class="row">
-                    <div class="col-md-12 mt-5">
+                    <div class="col-md-12 mt-3">
                         <button class="btn btn-primary btn-sm" type="submit" name="submit">Find</button>
                     </div>
                 </div>
+
             </form>
-
-            <?php if(isset($start) && isset($end)) { ?>
-
-            <div class="title mt-5">
-                <h3>From (Not included): <b><?php echo $start; ?></b> - To (Included): <b><?php echo $end; ?></b></h3>
-            </div>
-
-            <div class="title mt-5">
-                <p>Number of days: <?php echo $number_of_days; ?></p>
-                <p>Number of weekdays: <?php echo $number_of_week_days; ?></p>
-                <p>Number of complete weeks: <?php echo $number_of_weeks; ?></p>
-            </div>
-
-            <?php } ?>
 
             <div class="title mt-5">
                 <p><?php if(isset($message)) { echo $message; } ?></p>
