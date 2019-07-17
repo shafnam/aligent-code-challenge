@@ -1,5 +1,5 @@
 
-Simple Time and Date Calculator with Timezone Conversion
+## Simple Time and Date Calculator with Timezone Conversion
 
 ---
 
