@@ -225,9 +225,32 @@
                     </div>
 
                     <div class="title mt-0">
-                        <p>Number of days: <?php echo $number_of_days; ?></p>                     
-                        <p>Number of weekdays: <?php echo $number_of_week_days; ?></p>
-                        <p>Number of complete weeks: <?php echo $number_of_weeks; ?></p>
+                        <table>
+                            <tr>
+                                <td>Number of days:</td>
+                                <td> <?php echo $number_of_days; ?></td>  
+                                <td><p class="pt-3 px-3">Get number of days in:</p></td>
+                                <td> 
+                                    <div class="form-group ml-2 pt-2">
+                                        <select class="form-control selectpicker" data-style="btn btn-link" name="convertTo" style="width: 80px;">
+                                            <option value="0">Please select</option>
+                                            <option value="seconds">seconds</option>
+                                            <option value="minutes">minutes</option>
+                                            <option value="hours">hours</option>
+                                            <option value="years">years</option>
+                                        </select>  
+                                    </div>                             
+                                </td>
+                            </tr>  
+                            <tr>
+                                <td><p>Number of weekdays:</p></td>
+                                <td><p> <?php echo $number_of_week_days; ?></p></td>
+                            </tr>  
+                            <tr> 
+                                <td style="width: 222px;"><p>Number of complete weeks:</p></td>
+                                <td><p> <?php echo $number_of_weeks; ?></p></td>  
+                            </tr>                                           
+                        </table>                     
                     </div>
 
                 <?php } ?>
