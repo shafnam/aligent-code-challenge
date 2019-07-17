@@ -59,7 +59,7 @@
             if($convert_to != null){
                 // Value given to convert the number of days
                 $number_of_days = findDateDiff($start, $end,$convert_to)[0];
-                $diff_in_convert_value = findDateDiff($start, $end,$convert_to)[1];
+                $diff_in_convert_value = floor(findDateDiff($start, $end,$convert_to)[1]); // gets the complete number
             } else {
                 $number_of_days = findDateDiff($start, $end, $convert_to);
             }
@@ -313,6 +313,12 @@
         <script src="https://rawgit.com/creativetimofficial/material-kit/master/assets/js/plugins/moment.min.js"></script>
         <script src="https://rawgit.com/creativetimofficial/material-kit/master/assets/js/plugins/bootstrap-datetimepicker.js"></script>
         <script src="https://rawgit.com/creativetimofficial/material-kit/master/assets/js/material-kit.js"></script>
+
+        <script>
+            if ( window.history.replaceState ) {
+                window.history.replaceState( null, null, window.location.href );
+            }
+        </script>   
     </body>
 
 </html>
