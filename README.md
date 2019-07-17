@@ -1,8 +1,6 @@
 
 ## Simple Time and Date Calculator with Timezone Conversion
 
----
-
 This application is created to calculate the number of days, number of weekdays and number of complete weeks between two datetime parameters. Also you can find out how many seconds, minutes, hours or years are there for a given time period. 
 
 ---
@@ -23,7 +21,7 @@ This application is created to calculate the number of days, number of weekdays 
 
 ## How to run
 
- 1. Clone the project by using <git clone https://shafnam@bitbucket.org/shafnam/aligent-code-challenge.git>
+ 1. Clone the project by using <git clone https://github.com/shafnam/aligent-code-challenge.git>
 
  2. Go to browser: http://localhost/aligent-code-challenge
  
