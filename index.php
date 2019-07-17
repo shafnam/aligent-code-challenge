@@ -12,6 +12,9 @@
         if(isset($_POST['timezone'])){
             $timezone = 1;
         }
+        /** If timezone not specified set default timezone as 'Australia/Adelaide'
+         *  else set the default timezone to start date timezone
+         */
         if (empty($_POST["s_tzone"])) {
             // Set 'Australia/Adelaide' timezone as default timezone
             date_default_timezone_set('Australia/Adelaide'); 
@@ -29,21 +32,28 @@
         if (empty($_POST["start"])) {
             $startErr = "Please enter a start date";
         } else {
-            $start = $_POST['start'];
+            $start_date = $_POST['start'];
+            $start = strtotime($start_date);
         }
         // Check whether the end date is empty. if not store the post value in $end variable
         if (empty($_POST["end"])) {
             $endErr = "Please enter an end date";
         } else {
-            $end = $_POST['end'];
+            $end_date = $_POST['end'];
+            if(empty($_POST["e_tzone"])){
+                $end = strtotime($end_date);
+            } else{
+                // add timezoen conversion to end date
+                $end = strtotime($end_date. ' ' . $e_tzone);
+            }
         }
 
         // If there are no validation errors run functions.
         if(empty($startErr) && empty($endErr)){
 
-            $number_of_days = findDateDiff($start, $end, $e_tzone);
+            $number_of_days = findDateDiff($start, $end);
             $number_of_days = floor($number_of_days); // gets the complete number of days
-            $number_of_week_days = findWeekDays($start, $end, $e_tzone);
+            $number_of_week_days = findWeekDays($start, $end);
             $number_of_weeks = findNoOfWeeks($start, $end);
             // $message = $s_tzone. $e_tzone;            
         }
@@ -58,7 +68,7 @@
      */
     function findDateDiff($start, $end)
     {        
-        $datediff = (strtotime($start) - strtotime($end));
+        $datediff = ($start - $end);
         // 1 day = 24 hours 
         // 24 * 60 * 60 = 86400 seconds 
         $number_of_days = abs($datediff / (60 * 60 * 24)); // gets the positive value
@@ -223,8 +233,8 @@
                 <?php if(isset($start) && isset($end)) { ?>
 
                     <div class="title mt-3">
-                        <p>From (Not included): <b><?php echo $start; ?>  <?php if(isset($s_tzone)){ echo $s_tzone . 'Time' ; } ?> 
-                        </b> - To (Included): <b><?php echo $end; ?> <?php if(isset($e_tzone)){ echo $e_tzone . 'Time'; } ?> 
+                        <p>From (Not included): <b><?php echo $start_date; ?>  <?php if(isset($s_tzone)){ echo $s_tzone . 'Time' ; } ?> 
+                        </b> - To (Included): <b><?php echo $end_date; ?> <?php if(isset($e_tzone)){ echo $e_tzone . 'Time'; } ?> 
                         </b></p>
                     </div>
 
