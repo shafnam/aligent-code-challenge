@@ -28,6 +28,11 @@
         } else {
             $e_tzone = $_POST['e_tzone'];
         }
+        if (empty($_POST["convert_to"])) {
+            $convert_to = null;
+        } else {
+            $convert_to = $_POST['convert_to'];
+        }
         // Check whether the start date is empty. if not store the post value in $start variable
         if (empty($_POST["start"])) {
             $startErr = "Please enter a start date";
@@ -51,7 +56,13 @@
         // If there are no validation errors run functions.
         if(empty($startErr) && empty($endErr)){
 
-            $number_of_days = findDateDiff($start, $end);
+            if($convert_to != null){
+                // Value given to convert the number of days
+                $number_of_days = findDateDiff($start, $end,$convert_to)[0];
+                $diff_in_convert_value = findDateDiff($start, $end,$convert_to)[1];
+            } else {
+                $number_of_days = findDateDiff($start, $end, $convert_to);
+            }
             $number_of_days = floor($number_of_days); // gets the complete number of days
             $number_of_week_days = findWeekDays($start, $end);
             $number_of_weeks = findNoOfWeeks($start, $end);
@@ -66,14 +77,32 @@
      * @param $end
      * @return integer
      */
-    function findDateDiff($start, $end)
+    function findDateDiff($start, $end, $convert_to=null)
     {        
         $datediff = ($start - $end);
         // 1 day = 24 hours 
         // 24 * 60 * 60 = 86400 seconds 
         $number_of_days = abs($datediff / (60 * 60 * 24)); // gets the positive value
-        //$number_of_days =  floor($number_of_days); // gets the complete number of days
-        return $number_of_days;
+        
+        if($convert_to != null) { 
+            if($convert_to == 'seconds') {
+                $datediffInConvertField = abs( $datediff);
+            }
+            else if($convert_to == 'minutes') {
+                $datediffInConvertField = abs( $datediff / 60 ) ;
+            }
+            else if($convert_to == 'hours') {
+                $datediffInConvertField = abs($datediff / (60 * 60)) ;
+            }
+            else if($convert_to == 'years') {
+                $datediffInConvertField = abs(round($datediff / (60 * 60 * 24 * 365.25))) ;
+            }
+            // return array as function result
+            return array($number_of_days, $datediffInConvertField);
+        } else {
+            // return only the number of days
+            return $number_of_days;
+        }
         
     }
 
@@ -219,8 +248,8 @@
                 <?php if(isset($start) && isset($end)) { ?>
 
                     <div class="title mt-3">
-                        <p>From (Not included): <b><?php echo $start_date; ?>  <?php if(isset($s_tzone)){ echo $s_tzone . 'Time' ; } ?> 
-                        </b> - To (Included): <b><?php echo $end_date; ?> <?php if(isset($e_tzone)){ echo $e_tzone . 'Time'; } ?> 
+                        <p>From (Not included): <b><?php echo $start_date; ?>  <?php if(isset($s_tzone)){ echo $s_tzone . ' Time' ; } ?> 
+                        </b> - To (Included): <b><?php echo $end_date; ?> <?php if(isset($e_tzone)){ echo $e_tzone . ' Time'; } ?> 
                         </b></p>
                     </div>
 
@@ -232,15 +261,16 @@
                                 <td><p class="pt-3 px-3">Get number of days in:</p></td>
                                 <td> 
                                     <div class="form-group ml-2 pt-2">
-                                        <select class="form-control selectpicker" data-style="btn btn-link" name="convertTo" style="width: 80px;">
+                                        <select class="form-control selectpicker" data-style="btn btn-link" name="convert_to" style="width: 80px;">
                                             <option value="0">Please select</option>
-                                            <option value="seconds">seconds</option>
-                                            <option value="minutes">minutes</option>
-                                            <option value="hours">hours</option>
-                                            <option value="years">years</option>
+                                            <option value="seconds" <?php if( isset($convert_to) && $convert_to == 'seconds'){ echo "selected"; }?>>seconds</option>
+                                            <option value="minutes" <?php if( isset($convert_to) && $convert_to == 'minutes'){ echo "selected"; }?>>minutes</option>
+                                            <option value="hours" <?php if( isset($convert_to) && $convert_to == 'hours'){ echo "selected"; }?>>hours</option>
+                                            <option value="years" <?php if( isset($convert_to) && $convert_to == 'years'){ echo "selected"; }?>>years</option>
                                         </select>  
                                     </div>                             
                                 </td>
+                                <td><p class="pt-3 px-3"><?php if(isset($diff_in_convert_value)) { echo $diff_in_convert_value . ' ' . $convert_to; } ?></p></td>
                             </tr>  
                             <tr>
                                 <td><p>Number of weekdays:</p></td>
