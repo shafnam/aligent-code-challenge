@@ -86,22 +86,8 @@
     function findWeekDays($start, $end)
     {
         $number_of_days = findDateDiff($start, $end); // find total number of days between the date range
-
-        /** 
-         * If number_of_days is not a whole number which means 
-         * there is a half day which cannot be considered  as
-         * a complete day therefore ignore that day 
-         * */
-        if (floor($number_of_days) == $number_of_days){
-            $no_days = 0;
-        } else {
-            // ignore the day
-            $no_days = -1;
-        }
-        
+        $no_days = 0;
         $weekends = 0;
-        $start = strtotime($start);
-        $end = strtotime($end);
 
         // If start is bigger than end
         // Then swap start and end
@@ -139,7 +125,7 @@
      */
     function findNoOfWeeks($start, $end)
     {
-        $datediff = (strtotime($start) - strtotime($end));
+        $datediff = ($start - $end);
         // 7 days = 24 hours * 7
         // 24 * 7 * 60 * 60 = 604800 seconds 
         $number_of_weeks = abs($datediff / (60 * 60 * 24 * 7)); // gets the positive value
