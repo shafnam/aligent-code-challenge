@@ -34,9 +34,19 @@ $(document).ready(function() {
 });
 
 $(document).ready(function(){
-    $('#allow_timezone').click(function(){
-        var inputValue = $(this).attr("value");
-        //alert(inputValue);
-        $("#" + inputValue).toggle();
+    $('#allow_timezone').change(function(){
+        if (this.checked) {
+            $('#timezone').show();
+        }
+        else {
+            $('#timezone').hide();
+        }                   
     });
+    if($('.timezonev input[type="checkbox"]:checked').length !== 0){
+        //alert('one or more checked');
+        $('#timezone').show();
+    }else{
+        //alert('Nothing checked');
+        $('#timezone').hide();
+    }
 });
